@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Extract the API path from the query
   const slug = req.query.slug || [];
   const path = Array.isArray(slug) ? slug.join('/') : '';
   if (!path) {
@@ -20,10 +19,20 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(targetUrl, options);
-    const data = await response.json();
-    res.status(response.status).json(data);
+    const contentType = response.headers.get('content-type');
+    let data;
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      data = { raw: text.substring(0, 500), hint: 'Backend returned non-JSON' };
+    }
+    res.status(response.status).json({
+      target: targetUrl,
+      status: response.status,
+      data
+    });
   } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({ error: 'Proxy error: ' + error.message });
+    res.status(500).json({ error: error.message, target: targetUrl });
   }
 }
