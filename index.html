@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aether · Sovereign Social Mesh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Inter', sans-serif; background: #060B16; color: #F0F4FF; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; background-image: radial-gradient(circle at 20% 30%, rgba(245, 176, 65, 0.02), transparent 60%); }
+        .phone-frame { max-width: 440px; width: 100%; background: #0F172A; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.06); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8); overflow: hidden; padding: 10px; position: relative; }
+        .phone-screen { background: #060B16; border-radius: 32px; overflow: hidden; height: 780px; display: flex; flex-direction: column; position: relative; }
+        .status-bar { display: flex; justify-content: space-between; padding: 10px 18px 6px; font-size: 11px; font-weight: 600; color: #8A9BB5; background: #060B16; flex-shrink: 0; }
+        .app-header { padding: 6px 18px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); flex-shrink: 0; }
+        .app-header .top-row { display: flex; justify-content: space-between; align-items: center; }
+        .app-header .brand { display: flex; align-items: center; gap: 6px; }
+        .app-header .brand .logo { font-size: 28px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, #F5B041, #D4A017); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .app-header .brand .sub { font-size: 7px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #4A5B7A; border-left: 1px solid rgba(255,255,255,0.04); padding-left: 6px; }
+        .app-header .brand .sub span { color: #F5B041; }
+        .app-header .header-icons { display: flex; gap: 12px; font-size: 18px; color: #8A9BB5; }
+        .app-header .tagline { font-size: 8px; text-align: center; color: #4A5B7A; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.6; }
+        .compass { display: flex; gap: 6px; padding: 10px 18px 6px; flex-shrink: 0; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .compass button { padding: 4px 14px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.04); background: transparent; color: #8A9BB5; font-size: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .compass button:hover { border-color: #F5B041; color: #F0F4FF; }
+        .compass button.active { background: rgba(245, 176, 65, 0.08); border-color: #F5B041; color: #F5B041; }
+        .feed { flex: 1; overflow-y: auto; padding: 12px 18px 80px; display: flex; flex-direction: column; gap: 16px; scrollbar-width: thin; scrollbar-color: rgba(245, 176, 65, 0.1) transparent; }
+        .feed::-webkit-scrollbar { width: 3px; }
+        .feed::-webkit-scrollbar-thumb { background: rgba(245, 176, 65, 0.2); border-radius: 10px; }
+        .post { background: #162035; border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 14px 16px; transition: 0.2s; }
+        .post:hover { border-color: rgba(245, 176, 65, 0.06); }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .post-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #F5B041, #00D4FF); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #060B16; flex-shrink: 0; }
+        .post-avatar.small { width: 24px; height: 24px; font-size: 10px; }
+        .post-user { flex: 1; }
+        .post-user .name { font-weight: 700; font-size: 14px; color: #F0F4FF; display: flex; align-items: center; gap: 4px; }
+        .post-user .name .did-badge { font-size: 7px; font-weight: 700; text-transform: uppercase; background: rgba(245, 176, 65, 0.08); color: #F5B041; padding: 0 6px; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.06); }
+        .post-user .handle { font-size: 11px; color: #8A9BB5; font-weight: 400; }
+        .post-time { font-size: 10px; color: #4A5B7A; flex-shrink: 0; }
+        .post-content { font-size: 14px; line-height: 1.6; color: #F0F4FF; margin-bottom: 6px; }
+        .post-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 10px; color: #4A5B7A; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 8px; margin-top: 6px; }
+        .post-actions { display: flex; gap: 16px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 10px; }
+        .post-actions button { background: transparent; border: none; color: #8A9BB5; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; font-family: inherit; }
+        .post-actions button:hover { color: #F0F4FF; }
+        .post-actions button .count { font-weight: 400; color: #4A5B7A; }
+        .thread-reply { display: flex; gap: 10px; margin-top: 10px; padding: 10px 12px; background: rgba(255,255,255,0.01); border-radius: 12px; border-left: 2px solid #F5B041; }
+        .thread-reply .reply-content { font-size: 12px; color: #8A9BB5; line-height: 1.5; }
+        .thread-reply .reply-content strong { color: #F0F4FF; }
+        .thread-reply .reply-content .time { font-size: 9px; color: #4A5B7A; display: block; margin-top: 2px; }
+        .offline-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; color: #F5B041; background: rgba(245, 176, 65, 0.04); border: 1px solid rgba(245, 176, 65, 0.04); padding: 0 8px; border-radius: 40px; }
+        .fab-features { position: absolute; bottom: 18px; right: 18px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #F5B041, #D4A017); border: none; color: #060B16; font-size: 28px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(245, 176, 65, 0.2); transition: 0.2s; z-index: 10; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+        .fab-features:hover { transform: scale(1.05); }
+        .fab-features .label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; position: absolute; bottom: -18px; color: #4A5B7A; white-space: nowrap; }
+        .drawer-overlay { position: absolute; inset: 0; background: rgba(6, 11, 22, 0.92); backdrop-filter: blur(16px); z-index: 20; display: none; flex-direction: column; padding: 40px 20px 20px; border-radius: 32px; overflow-y: auto; }
+        .drawer-overlay.active { display: flex; }
+        .drawer-overlay .close-drawer { align-self: flex-end; background: none; border: none; color: #8A9BB5; font-size: 24px; cursor: pointer; font-family: inherit; padding: 4px 8px; }
+        .drawer-overlay .drawer-title { font-size: 20px; font-weight: 800; color: #F5B041; margin-bottom: 4px; text-align: center; }
+        .drawer-overlay .drawer-sub { font-size: 12px; color: #8A9BB5; text-align: center; margin-bottom: 20px; }
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .feature-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 14px; padding: 14px 12px; text-align: center; }
+        .feature-item .f-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+        .feature-item .f-title { font-size: 11px; font-weight: 700; color: #F0F4FF; line-height: 1.3; }
+        .feature-item .f-desc { font-size: 9px; color: #8A9BB5; line-height: 1.4; margin-top: 2px; }
+        .footer-brand { position: absolute; bottom: 80px; left: 0; right: 0; text-align: center; font-size: 7px; color: #4A5B7A; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.3; pointer-events: none; z-index: 5; }
+        .footer-brand strong { color: #F5B041; font-weight: 700; }
+        .compose-area { display: flex; gap: 8px; padding: 8px 16px; border-top: 1px solid rgba(255,255,255,0.04); background: #0F172A; flex-shrink: 0; }
+        .compose-area input { flex: 1; padding: 10px 14px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.04); background: #1A2440; color: #F0F4FF; font-size: 13px; outline: none; font-family: inherit; }
+        .compose-area input::placeholder { color: #4A5B7A; }
+        .compose-area button { padding: 10px 20px; border-radius: 60px; border: none; background: linear-gradient(135deg, #F5B041, #D4A017); color: #060B16; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+        .compose-area button:hover { transform: scale(1.02); }
+        @media (max-width: 460px) { .phone-frame { border-radius: 24px; padding: 6px; } .phone-screen { height: 700px; border-radius: 20px; } .app-header .brand .logo { font-size: 22px; } .post-content { font-size: 13px; } }
+        @media (max-width: 380px) { .phone-screen { height: 620px; } }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <div class="phone-screen">
+        <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+        <div class="app-header">
+            <div class="top-row">
+                <div class="brand">
+                    <span class="logo">Aether</span>
+                    <span class="sub">Powered by <span>Sovereign AI Mesh</span></span>
+                </div>
+                <div class="header-icons"><span>🔍</span><span>🔔</span></div>
+            </div>
+            <div class="tagline">The Social Constitution · A Product of Frontier Tech Labs</div>
+        </div>
+        <div class="compass">
+            <button class="active">🌐 Chronological</button>
+            <button>⭐ Trust Score</button>
+            <button>📍 Local</button>
+            <button>🔥 Trending</button>
+        </div>
+        <div class="feed" id="feed"></div>
+        <div class="compose-area">
+            <input id="postInput" placeholder="What's on your mind?" />
+            <button id="postBtn">Post</button>
+        </div>
+        <button class="fab-features" id="openDrawerBtn">✦<span class="label">Features</span></button>
+        <div class="footer-brand"><strong>Aether</strong> · A Product of Frontier Tech Labs</div>
+        <div class="drawer-overlay" id="featureDrawer">
+            <button class="close-drawer" id="closeDrawerBtn">✕</button>
+            <div class="drawer-title">✦ All Features</div>
+            <div class="drawer-sub">The first social constitution — built for humanity.</div>
+            <div class="feature-grid">
+                <div class="feature-item"><span class="f-icon">🧭</span><div class="f-title">Truth Compass</div><div class="f-desc">You control your feed, not an algorithm.</div></div>
+                <div class="feature-item"><span class="f-icon">🛡️</span><div class="f-title">Sovereign Identity</div><div class="f-desc">Own your identity. No phone, no email.</div></div>
+                <div class="feature-item"><span class="f-icon">🧵</span><div class="f-title">Mesh Replies</div><div class="f-desc">Threads that never break. Immutable links.</div></div>
+                <div class="feature-item"><span class="f-icon">✍️</span><div class="f-title">Collaborative Posts</div><div class="f-desc">Co‑author with anyone, anywhere.</div></div>
+                <div class="feature-item"><span class="f-icon">🔎</span><div class="f-title">ZK Moderation</div><div class="f-desc">Privacy‑first. Flag without exposing content.</div></div>
+                <div class="feature-item"><span class="f-icon">👻</span><div class="f-title">Invisible Mode</div><div class="f-desc">Browse without a trace.</div></div>
+                <div class="feature-item"><span class="f-icon">⚖️</span><div class="f-title">Community Courts</div><div class="f-desc">Peer‑to‑peer dispute resolution.</div></div>
+                <div class="feature-item"><span class="f-icon">📄</span><div class="f-title">Post Mortem</div><div class="f-desc">Know why your post was flagged. Appeal.</div></div>
+                <div class="feature-item"><span class="f-icon">📡</span><div class="f-title">Offline Mesh</div><div class="f-desc">Posts travel without internet.</div></div>
+                <div class="feature-item"><span class="f-icon">📊</span><div class="f-title">Trust Graph</div><div class="f-desc">Reputation earned, not bought.</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+const BASE_URL = 'https://indian-messenger-production-e288.up.railway.app';
+let feed = [];
+
+function getDID() {
+    let did = localStorage.getItem('aether_did');
+    if (!did) {
+        did = 'did:mesh:' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('aether_did', did);
+    }
+    return did;
+}
+
+const did = getDID();
+
+async function renderFeed() {
+    const feedEl = document.getElementById('feed');
+    feedEl.innerHTML = '';
+    for (const post of feed) {
+        const postEl = document.createElement('div');
+        postEl.className = 'post';
+        postEl.innerHTML = `
+            <div class="post-header">
+                <div class="post-avatar">${post.did.charAt(0).toUpperCase()}</div>
+                <div class="post-user">
+                    <div class="name">${post.did.substring(0, 8)} <span class="did-badge">🛡️ DID</span></div>
+                    <div class="handle">${post.location || '🌍'}</div>
+                </div>
+                <div class="post-time">${new Date(post.timestamp).toLocaleTimeString()}</div>
+            </div>
+            <div class="post-content">${post.text}</div>
+            <div class="post-meta"><span>💬 ${post.replies || 0} replies</span></div>
+            <div class="post-actions">
+                <button onclick="likePost('${post.id}')">❤️ <span class="count">${post.likes || 0}</span></button>
+                <button onclick="replyToPost('${post.id}')">💬 <span class="count">${post.replies || 0}</span></button>
+                <button>🔁</button>
+            </div>
+        `;
+        feedEl.appendChild(postEl);
+    }
+}
+
+async function fetchFeed() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/feed`);
+        feed = await res.json();
+        await renderFeed();
+    } catch (e) {
+        console.error('Feed error:', e);
+    }
+}
+
+document.getElementById('postBtn').addEventListener('click', async () => {
+    const input = document.getElementById('postInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const res = await fetch(`${BASE_URL}/api/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ did, text, location: 'New Delhi' })
+    });
+    if (res.ok) {
+        input.value = '';
+        await fetchFeed();
+    }
+});
+
+async function likePost(postId) {
+    await fetch(`${BASE_URL}/api/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId, did })
+    });
+    await fetchFeed();
+}
+
+async function replyToPost(parentId) {
+    const text = prompt('Your reply:');
+    if (!text) return;
+    await fetch(`${BASE_URL}/api/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ parentId, did, text })
+    });
+    await fetchFeed();
+}
+
+document.getElementById('openDrawerBtn').addEventListener('click', () => {
+    document.getElementById('featureDrawer').classList.add('active');
+});
+document.getElementById('closeDrawerBtn').addEventListener('click', () => {
+    document.getElementById('featureDrawer').classList.remove('active');
+});
+document.getElementById('featureDrawer').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) e.target.classList.remove('active');
+});
+
+document.querySelectorAll('.compass button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.compass button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        fetchFeed();
+    });
+});
+
+fetchFeed();
+</script>
+</body>
+</html>
