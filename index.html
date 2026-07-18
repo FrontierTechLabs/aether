@@ -452,7 +452,8 @@
     </div>
 </div>
 <script>
-const BASE_URL = 'https://indian-messenger-production-e288.up.railway.app';
+const BASE_URL = "";
+// If BASE_URL is empty, use the current origin (Vercel) as proxy
 let feed = [];
 
 function getDID() {
