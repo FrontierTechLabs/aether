@@ -69,6 +69,7 @@
         .compose-area button:hover { transform: scale(1.02); }
         .did-display { font-size: 11px; font-weight: 600; color: #F5B041; cursor: pointer; padding: 4px 12px; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.1); background: rgba(245, 176, 65, 0.04); }
         .did-display:hover { border-color: #F5B041; background: rgba(245, 176, 65, 0.08); }
+        .error-msg { background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); padding: 8px 12px; border-radius: 8px; color: #E74C3C; font-size: 12px; margin-top: 8px; display: none; }
         @media (max-width: 460px) { .phone-frame { border-radius: 24px; padding: 6px; } .phone-screen { height: 700px; border-radius: 20px; } .app-header .brand .logo { font-size: 22px; } .post-content { font-size: 13px; } }
         @media (max-width: 380px) { .phone-screen { height: 620px; } }
     </style>
@@ -76,7 +77,7 @@
 <body>
 <div class="phone-frame">
     <div class="phone-screen">
-        <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+        <div class="status-bar"><span id="statusTime">9:41</span><span>📶 🔋</span></div>
         <div class="app-header">
             <div class="top-row">
                 <div class="brand">
@@ -102,6 +103,7 @@
             <input id="postInput" placeholder="What's on your mind?" />
             <button id="postBtn">Post</button>
         </div>
+        <div id="errorBox" class="error-msg"></div>
         <button class="fab-features" id="openDrawerBtn">✦<span class="label">Features</span></button>
         <div class="footer-brand"><strong>Aether</strong> · A Product of Frontier Tech Labs</div>
         <div class="drawer-overlay" id="featureDrawer">
@@ -137,6 +139,16 @@ function getDID() {
 }
 
 const did = getDID();
+
+// Update time every 10 seconds
+function updateTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('statusTime').textContent = h + ':' + m;
+}
+setInterval(updateTime, 10000);
+updateTime();
 
 // Show DID in header
 document.getElementById('didDisplay').textContent = '🆔 ' + did.substring(0, 10) + '…';
@@ -174,44 +186,69 @@ async function fetchFeed() {
         feed = await res.json();
         await renderFeed();
     } catch (e) {
-        console.error('Feed error:', e);
+        showError('Failed to load feed: ' + e.message);
     }
+}
+
+function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.textContent = '⚠️ ' + msg;
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 5000);
 }
 
 document.getElementById('postBtn').addEventListener('click', async () => {
     const input = document.getElementById('postInput');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) {
+        showError('Please type something first.');
+        return;
+    }
 
-    const res = await fetch(`${BASE_URL}/api/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ did, text, location: 'New Delhi' })
-    });
-    if (res.ok) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/posts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ did, text, location: 'New Delhi' })
+        });
+        if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+        }
+        const data = await res.json();
+        console.log('Post created:', data);
         input.value = '';
         await fetchFeed();
+    } catch (err) {
+        showError('Failed to post: ' + err.message);
     }
 });
 
 async function likePost(postId) {
-    await fetch(`${BASE_URL}/api/like`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postId, did })
-    });
-    await fetchFeed();
+    try {
+        await fetch(`${BASE_URL}/api/like`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId, did })
+        });
+        await fetchFeed();
+    } catch (e) {
+        showError('Like failed: ' + e.message);
+    }
 }
 
 async function replyToPost(parentId) {
     const text = prompt('Your reply:');
     if (!text) return;
-    await fetch(`${BASE_URL}/api/reply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ parentId, did, text })
-    });
-    await fetchFeed();
+    try {
+        await fetch(`${BASE_URL}/api/reply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ parentId, did, text })
+        });
+        await fetchFeed();
+    } catch (e) {
+        showError('Reply failed: ' + e.message);
+    }
 }
 
 document.getElementById('openDrawerBtn').addEventListener('click', () => {
