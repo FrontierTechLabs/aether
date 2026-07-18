@@ -8,8 +8,6 @@ export default async function handler(req, res) {
     method: req.method,
     headers: {
       'Content-Type': 'application/json',
-      // Forward important headers
-      ...(req.headers.authorization && { Authorization: req.headers.authorization }),
     },
   };
 
@@ -20,10 +18,17 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(targetUrl, options);
-    const data = await response.json();
-    res.status(response.status).json(data);
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      res.status(response.status).json(data);
+    } else {
+      // If not JSON, return error
+      const text = await response.text();
+      res.status(500).json({ error: 'Backend returned non-JSON: ' + text.substring(0, 100) });
+    }
   } catch (error) {
-    console.error('Proxy error:', error);
     res.status(500).json({ error: 'Proxy error: ' + error.message });
   }
 }
