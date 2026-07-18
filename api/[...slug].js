@@ -1,9 +1,12 @@
 export default async function handler(req, res) {
-  // Get the full path after /api/
-  const slug = req.query.slug ? req.query.slug.join('/') : '';
-  const targetUrl = `https://indian-messenger-production-e288.up.railway.app/api/${slug}`;
+  // Extract the API path from the query
+  const slug = req.query.slug || [];
+  const path = Array.isArray(slug) ? slug.join('/') : '';
+  if (!path) {
+    return res.status(400).json({ error: 'Missing API path' });
+  }
+  const targetUrl = `https://indian-messenger-production-e288.up.railway.app/api/${path}`;
 
-  // Build the fetch options
   const options = {
     method: req.method,
     headers: {
@@ -11,24 +14,16 @@ export default async function handler(req, res) {
     },
   };
 
-  // Add body for non‑GET requests
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     options.body = JSON.stringify(req.body);
   }
 
   try {
     const response = await fetch(targetUrl, options);
-    // Check if response is JSON
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      const data = await response.json();
-      res.status(response.status).json(data);
-    } else {
-      // If not JSON, return error
-      const text = await response.text();
-      res.status(500).json({ error: 'Backend returned non-JSON: ' + text.substring(0, 100) });
-    }
+    const data = await response.json();
+    res.status(response.status).json(data);
   } catch (error) {
+    console.error('Proxy error:', error);
     res.status(500).json({ error: 'Proxy error: ' + error.message });
   }
 }
