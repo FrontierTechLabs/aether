@@ -7,408 +7,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #060B16;
-            color: #F0F4FF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 16px;
-            background-image: radial-gradient(circle at 20% 30%, rgba(245, 176, 65, 0.02), transparent 60%);
-        }
-        .phone-frame {
-            max-width: 440px;
-            width: 100%;
-            background: #0F172A;
-            border-radius: 40px;
-            border: 1px solid rgba(245, 176, 65, 0.06);
-            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8);
-            overflow: hidden;
-            padding: 10px;
-            position: relative;
-        }
-        .phone-screen {
-            background: #060B16;
-            border-radius: 32px;
-            overflow: hidden;
-            height: 780px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        /* ---- Header (Centered) ---- */
-        .app-header {
-            padding: 20px 18px 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            flex-shrink: 0;
-            text-align: center;
-        }
-        .app-header .brand {
-            font-size: 36px;
-            font-weight: 900;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #F5B041, #D4A017, #00D4FF, #7B2FFC);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 300% 300%;
-            animation: gradientShift 4s ease-in-out infinite;
-        }
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .app-header .tagline {
-            font-size: 12px;
-            font-weight: 600;
-            color: #8A9BB5;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-        .app-header .sub-brand {
-            font-size: 9px;
-            color: #4A5B7A;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
-        .app-header .sub-brand strong {
-            color: #F5B041;
-            font-weight: 700;
-        }
-        .app-header .did-display {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            color: #F5B041;
-            cursor: pointer;
-            padding: 4px 14px;
-            border-radius: 40px;
-            border: 1px solid rgba(245, 176, 65, 0.1);
-            background: rgba(245, 176, 65, 0.04);
-            margin-top: 6px;
-        }
-        .app-header .did-display:hover {
-            border-color: #F5B041;
-            background: rgba(245, 176, 65, 0.08);
-        }
-        .app-header .username-display {
-            font-size: 12px;
-            color: #8A9BB5;
-            margin-top: 2px;
-        }
-        /* ---- Compass ---- */
-        .compass {
-            display: flex;
-            gap: 6px;
-            padding: 10px 18px 6px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            justify-content: center;
-        }
-        .compass button {
-            padding: 4px 14px;
-            border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.04);
-            background: transparent;
-            color: #8A9BB5;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-        .compass button:hover {
-            border-color: #F5B041;
-            color: #F0F4FF;
-        }
-        .compass button.active {
-            background: rgba(245, 176, 65, 0.08);
-            border-color: #F5B041;
-            color: #F5B041;
-        }
-        /* ---- Feed ---- */
-        .feed {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 18px 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(245, 176, 65, 0.1) transparent;
-        }
+        body { font-family: 'Inter', sans-serif; background: #060B16; color: #F0F4FF; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+        .phone-frame { max-width: 440px; width: 100%; background: #0F172A; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.06); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8); overflow: hidden; padding: 10px; position: relative; }
+        .phone-screen { background: #060B16; border-radius: 32px; overflow: hidden; height: 780px; display: flex; flex-direction: column; position: relative; }
+        .app-header { padding: 20px 18px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); flex-shrink: 0; text-align: center; }
+        .app-header .brand { font-size: 36px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, #F5B041, #D4A017, #00D4FF, #7B2FFC); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 300% 300%; animation: gradientShift 4s ease-in-out infinite; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .app-header .tagline { font-size: 12px; font-weight: 600; color: #8A9BB5; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+        .app-header .sub-brand { font-size: 9px; color: #4A5B7A; letter-spacing: 1px; margin-top: 2px; }
+        .app-header .sub-brand strong { color: #F5B041; font-weight: 700; }
+        .app-header .did-display { display: inline-block; font-size: 11px; font-weight: 600; color: #F5B041; cursor: pointer; padding: 4px 14px; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.1); background: rgba(245, 176, 65, 0.04); margin-top: 6px; }
+        .app-header .did-display:hover { border-color: #F5B041; background: rgba(245, 176, 65, 0.08); }
+        .app-header .username-display { font-size: 12px; color: #8A9BB5; margin-top: 2px; }
+        .compass { display: flex; gap: 6px; padding: 10px 18px 6px; flex-shrink: 0; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.04); justify-content: center; }
+        .compass button { padding: 4px 14px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.04); background: transparent; color: #8A9BB5; font-size: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .compass button:hover { border-color: #F5B041; color: #F0F4FF; }
+        .compass button.active { background: rgba(245, 176, 65, 0.08); border-color: #F5B041; color: #F5B041; }
+        .feed { flex: 1; overflow-y: auto; padding: 12px 18px 80px; display: flex; flex-direction: column; gap: 16px; scrollbar-width: thin; scrollbar-color: rgba(245, 176, 65, 0.1) transparent; }
         .feed::-webkit-scrollbar { width: 3px; }
         .feed::-webkit-scrollbar-thumb { background: rgba(245, 176, 65, 0.2); border-radius: 10px; }
-        .post {
-            background: #162035;
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 16px;
-            padding: 14px 16px;
-            transition: 0.2s;
-        }
+        .post { background: #162035; border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 14px 16px; transition: 0.2s; }
         .post:hover { border-color: rgba(245, 176, 65, 0.06); }
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-        .post-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #F5B041, #00D4FF);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 14px;
-            color: #060B16;
-            flex-shrink: 0;
-        }
-        .post-avatar.small { width: 24px; height: 24px; font-size: 10px; }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .post-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #F5B041, #00D4FF); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #060B16; flex-shrink: 0; }
         .post-user { flex: 1; }
-        .post-user .name {
-            font-weight: 700;
-            font-size: 14px;
-            color: #F0F4FF;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .post-user .name .did-badge {
-            font-size: 7px;
-            font-weight: 700;
-            text-transform: uppercase;
-            background: rgba(245, 176, 65, 0.08);
-            color: #F5B041;
-            padding: 0 6px;
-            border-radius: 40px;
-            border: 1px solid rgba(245, 176, 65, 0.06);
-        }
-        .post-user .handle {
-            font-size: 11px;
-            color: #8A9BB5;
-            font-weight: 400;
-        }
-        .post-time {
-            font-size: 10px;
-            color: #4A5B7A;
-            flex-shrink: 0;
-        }
-        .post-content {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #F0F4FF;
-            margin-bottom: 6px;
-        }
-        .post-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            font-size: 10px;
-            color: #4A5B7A;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            padding-top: 8px;
-            margin-top: 6px;
-        }
-        .post-actions {
-            display: flex;
-            gap: 16px;
-            margin-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            padding-top: 10px;
-        }
-        .post-actions button {
-            background: transparent;
-            border: none;
-            color: #8A9BB5;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-family: inherit;
-        }
+        .post-user .name { font-weight: 700; font-size: 14px; color: #F0F4FF; display: flex; align-items: center; gap: 4px; }
+        .post-user .name .did-badge { font-size: 7px; font-weight: 700; text-transform: uppercase; background: rgba(245, 176, 65, 0.08); color: #F5B041; padding: 0 6px; border-radius: 40px; border: 1px solid rgba(245, 176, 65, 0.06); }
+        .post-user .handle { font-size: 11px; color: #8A9BB5; font-weight: 400; }
+        .post-time { font-size: 10px; color: #4A5B7A; flex-shrink: 0; }
+        .post-content { font-size: 14px; line-height: 1.6; color: #F0F4FF; margin-bottom: 6px; }
+        .post-content img { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.04); }
+        .post-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 10px; color: #4A5B7A; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 8px; margin-top: 6px; }
+        .post-actions { display: flex; gap: 16px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 10px; }
+        .post-actions button { background: transparent; border: none; color: #8A9BB5; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; font-family: inherit; }
         .post-actions button:hover { color: #F0F4FF; }
         .post-actions button .count { font-weight: 400; color: #4A5B7A; }
-        /* ---- Compose ---- */
-        .compose-area {
-            display: flex;
-            gap: 8px;
-            padding: 8px 16px 80px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            background: #0F172A;
-            flex-shrink: 0;
-        }
-        .compose-area input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 60px;
-            border: 1px solid rgba(255,255,255,0.04);
-            background: #1A2440;
-            color: #F0F4FF;
-            font-size: 13px;
-            outline: none;
-            font-family: inherit;
-        }
+        .compose-area { display: flex; gap: 8px; padding: 8px 16px 80px; border-top: 1px solid rgba(255,255,255,0.04); background: #0F172A; flex-shrink: 0; align-items: center; flex-wrap: wrap; }
+        .compose-area input { flex: 1; padding: 10px 14px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.04); background: #1A2440; color: #F0F4FF; font-size: 13px; outline: none; font-family: inherit; min-width: 120px; }
         .compose-area input::placeholder { color: #4A5B7A; }
-        .compose-area button {
-            padding: 10px 20px;
-            border-radius: 60px;
-            border: none;
-            background: linear-gradient(135deg, #F5B041, #D4A017);
-            color: #060B16;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .compose-area button:hover { transform: scale(1.02); }
-        /* ---- Error box ---- */
-        .error-msg {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: #E74C3C;
-            font-size: 12px;
-            margin: 8px 16px;
-            display: none;
-        }
-        /* ---- Footer ---- */
-        .footer-brand {
-            position: absolute;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8px;
-            color: #4A5B7A;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            opacity: 0.4;
-            pointer-events: none;
-            z-index: 5;
-        }
-        .footer-brand .powered {
-            font-weight: 400;
-            color: #4A5B7A;
-        }
-        .footer-brand .product {
-            font-weight: 600;
-            color: #F5B041;
-        }
-        /* ---- Feature FAB ---- */
-        .fab-features {
-            position: absolute;
-            bottom: 18px;
-            right: 18px;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #F5B041, #D4A017);
-            border: none;
-            color: #060B16;
-            font-size: 28px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(245, 176, 65, 0.2);
-            transition: 0.2s;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: inherit;
-        }
+        .compose-area .btn-group { display: flex; gap: 6px; align-items: center; }
+        .compose-area .btn-group button { padding: 10px 16px; border-radius: 60px; border: none; background: linear-gradient(135deg, #F5B041, #D4A017); color: #060B16; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+        .compose-area .btn-group button:hover { transform: scale(1.02); }
+        .compose-area .btn-group .image-btn { background: transparent; border: 1px solid rgba(255,255,255,0.04); color: #8A9BB5; font-size: 18px; padding: 8px 12px; }
+        .compose-area .btn-group .image-btn:hover { border-color: #F5B041; color: #F5B041; }
+        .image-preview { max-width: 80px; max-height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); object-fit: cover; }
+        .error-msg { background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); padding: 8px 12px; border-radius: 8px; color: #E74C3C; font-size: 12px; margin: 8px 16px; display: none; }
+        .fab-features { position: absolute; bottom: 18px; right: 18px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #F5B041, #D4A017); border: none; color: #060B16; font-size: 28px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(245, 176, 65, 0.2); transition: 0.2s; z-index: 10; display: flex; align-items: center; justify-content: center; font-family: inherit; }
         .fab-features:hover { transform: scale(1.05); }
-        .fab-features .label {
-            font-size: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: absolute;
-            bottom: -18px;
-            color: #4A5B7A;
-            white-space: nowrap;
-        }
-        /* ---- Drawer ---- */
-        .drawer-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(6, 11, 22, 0.92);
-            backdrop-filter: blur(16px);
-            z-index: 20;
-            display: none;
-            flex-direction: column;
-            padding: 40px 20px 20px;
-            border-radius: 32px;
-            overflow-y: auto;
-        }
+        .fab-features .label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; position: absolute; bottom: -18px; color: #4A5B7A; white-space: nowrap; }
+        .drawer-overlay { position: absolute; inset: 0; background: rgba(6, 11, 22, 0.92); backdrop-filter: blur(16px); z-index: 20; display: none; flex-direction: column; padding: 40px 20px 20px; border-radius: 32px; overflow-y: auto; }
         .drawer-overlay.active { display: flex; }
-        .drawer-overlay .close-drawer {
-            align-self: flex-end;
-            background: none;
-            border: none;
-            color: #8A9BB5;
-            font-size: 24px;
-            cursor: pointer;
-            font-family: inherit;
-            padding: 4px 8px;
-        }
-        .drawer-overlay .drawer-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #F5B041;
-            margin-bottom: 4px;
-            text-align: center;
-        }
-        .drawer-overlay .drawer-sub {
-            font-size: 12px;
-            color: #8A9BB5;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .feature-item {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 14px;
-            padding: 14px 12px;
-            text-align: center;
-        }
+        .drawer-overlay .close-drawer { align-self: flex-end; background: none; border: none; color: #8A9BB5; font-size: 24px; cursor: pointer; font-family: inherit; padding: 4px 8px; }
+        .drawer-overlay .drawer-title { font-size: 20px; font-weight: 800; color: #F5B041; margin-bottom: 4px; text-align: center; }
+        .drawer-overlay .drawer-sub { font-size: 12px; color: #8A9BB5; text-align: center; margin-bottom: 20px; }
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .feature-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 14px; padding: 14px 12px; text-align: center; }
         .feature-item .f-icon { font-size: 24px; display: block; margin-bottom: 4px; }
         .feature-item .f-title { font-size: 11px; font-weight: 700; color: #F0F4FF; line-height: 1.3; }
         .feature-item .f-desc { font-size: 9px; color: #8A9BB5; line-height: 1.4; margin-top: 2px; }
+        @media (max-width: 460px) { .phone-frame { border-radius: 24px; padding: 6px; } .phone-screen { height: 700px; border-radius: 20px; } .app-header .brand { font-size: 28px; } }
     </style>
 </head>
 <body>
 <div class="phone-frame">
     <div class="phone-screen">
-        <!-- Header -->
         <div class="app-header">
             <div class="brand">AETHER</div>
             <div class="tagline">The Social Constitution</div>
             <div class="sub-brand"><strong>Powered by Sovereign AI Mesh</strong></div>
-            <div class="sub-brand" style="margin-top:2px;">A Product of <strong>Frontier Tech Labs</strong></div>
+            <div class="sub-brand">A Product of <strong>Frontier Tech Labs</strong></div>
             <div style="display:flex; justify-content:center; gap:12px; margin-top:6px; flex-wrap:wrap;">
                 <span class="did-display" id="didDisplay">🆔 DID</span>
                 <span class="username-display" id="usernameDisplay">User</span>
             </div>
         </div>
 
-        <!-- Compass -->
         <div class="compass">
             <button class="active">🌐 Chronological</button>
             <button>⭐ Trust Score</button>
@@ -416,22 +89,21 @@
             <button>🔥 Trending</button>
         </div>
 
-        <!-- Error Box -->
         <div id="errorBox" class="error-msg"></div>
 
-        <!-- Feed -->
         <div class="feed" id="feed"></div>
 
-        <!-- Compose -->
         <div class="compose-area">
             <input id="postInput" placeholder="What's on your mind?" />
-            <button id="postBtn">Post</button>
+            <div class="btn-group">
+                <button class="image-btn" id="imageBtn" title="Attach image">📷</button>
+                <button id="postBtn">Post</button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+            <img id="imagePreview" class="image-preview" style="display:none;" />
         </div>
 
-        <!-- Feature FAB -->
         <button class="fab-features" id="openDrawerBtn">✦<span class="label">Features</span></button>
-
-        <!-- Drawer -->
         <div class="drawer-overlay" id="featureDrawer">
             <button class="close-drawer" id="closeDrawerBtn">✕</button>
             <div class="drawer-title">✦ All Features</div>
@@ -451,9 +123,9 @@
         </div>
     </div>
 </div>
+
 <script>
-const BASE_URL = "";
-// If BASE_URL is empty, use the current origin (Vercel) as proxy
+const BASE_URL = '';
 let feed = [];
 
 function getDID() {
@@ -465,11 +137,9 @@ function getDID() {
     return did;
 }
 const did = getDID();
-
-// Display DID and username
 document.getElementById('didDisplay').textContent = '🆔 ' + did.substring(0, 10) + '…';
 document.getElementById('didDisplay').onclick = function() {
-    ;
+    alert('Your Decentralized ID (DID):\n\n' + did + '\n\nThis is your unique identity on the Sovereign AI Mesh.');
 };
 document.getElementById('usernameDisplay').textContent = did.substring(0, 8);
 
@@ -480,12 +150,16 @@ function showError(msg) {
     setTimeout(() => { box.style.display = 'none'; }, 8000);
 }
 
-async function renderFeed() {
+function renderFeed() {
     const feedEl = document.getElementById('feed');
     feedEl.innerHTML = '';
     for (const post of feed) {
         const postEl = document.createElement('div');
         postEl.className = 'post';
+        let imageHtml = '';
+        if (post.image) {
+            imageHtml = `<img src="${post.image}" alt="Post image" />`;
+        }
         postEl.innerHTML = `
             <div class="post-header">
                 <div class="post-avatar">${post.did.charAt(0).toUpperCase()}</div>
@@ -495,7 +169,7 @@ async function renderFeed() {
                 </div>
                 <div class="post-time">${new Date(post.timestamp).toLocaleTimeString()}</div>
             </div>
-            <div class="post-content">${post.text}</div>
+            <div class="post-content">${post.text}${imageHtml}</div>
             <div class="post-meta"><span>💬 ${post.replies || 0} replies</span></div>
             <div class="post-actions">
                 <button onclick="likePost('${post.id}')">❤️ <span class="count">${post.likes || 0}</span></button>
@@ -509,14 +183,32 @@ async function renderFeed() {
 
 async function fetchFeed() {
     try {
-        const res = await fetch(`${BASE_URL}/api/feed`);
+        const res = await fetch('/api/feed');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         feed = await res.json();
-        await renderFeed();
+        renderFeed();
     } catch (e) {
         showError('Failed to load feed: ' + e.message);
     }
 }
+
+// Image upload
+let selectedImage = null;
+const fileInput = document.getElementById('fileInput');
+const imagePreview = document.getElementById('imagePreview');
+document.getElementById('imageBtn').addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        selectedImage = ev.target.result;
+        imagePreview.src = selectedImage;
+        imagePreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+});
 
 document.getElementById('postBtn').addEventListener('click', async () => {
     const input = document.getElementById('postInput');
@@ -526,17 +218,38 @@ document.getElementById('postBtn').addEventListener('click', async () => {
         return;
     }
 
+    let image = null;
+    if (selectedImage) {
+        // In a real implementation, we would upload to Supabase and get a URL.
+        // For now, we'll embed the base64 image (small images only).
+        // We'll use a tiny API to upload via the proxy.
+        try {
+            const uploadRes = await fetch('/api/upload', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: selectedImage, did })
+            });
+            if (uploadRes.ok) {
+                const uploadData = await uploadRes.json();
+                image = uploadData.url;
+            } else {
+                showError('Image upload failed. Posting without image.');
+            }
+        } catch (e) {
+            showError('Image upload error. Posting without image.');
+        }
+        selectedImage = null;
+        imagePreview.style.display = 'none';
+        fileInput.value = '';
+    }
+
     try {
-        const res = await fetch(`${BASE_URL}/api/posts`, {
+        const res = await fetch('/api/posts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ did, text, location: 'New Delhi' })
+            body: JSON.stringify({ did, text, location: 'New Delhi', image })
         });
-        if (!res.ok) {
-            const errText = await res.text();
-            throw new Error('HTTP ' + res.status + ': ' + errText);
-        }
-        const data = await res.json();
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         input.value = '';
         await fetchFeed();
     } catch (err) {
@@ -546,30 +259,18 @@ document.getElementById('postBtn').addEventListener('click', async () => {
 
 async function likePost(postId) {
     try {
-        await fetch(`${BASE_URL}/api/like`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ postId, did })
-        });
+        await fetch('/api/like', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postId, did }) });
         await fetchFeed();
-    } catch (e) {
-        showError('Like failed: ' + e.message);
-    }
+    } catch (e) { showError('Like failed: ' + e.message); }
 }
 
 async function replyToPost(parentId) {
     const text = prompt('Your reply:');
     if (!text) return;
     try {
-        await fetch(`${BASE_URL}/api/reply`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ parentId, did, text })
-        });
+        await fetch('/api/reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ parentId, did, text }) });
         await fetchFeed();
-    } catch (e) {
-        showError('Reply failed: ' + e.message);
-    }
+    } catch (e) { showError('Reply failed: ' + e.message); }
 }
 
 document.getElementById('openDrawerBtn').addEventListener('click', () => {
