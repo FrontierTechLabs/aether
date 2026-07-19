@@ -197,7 +197,14 @@ const fileInput = document.getElementById('fileInput');
 const imagePreview = document.getElementById('imagePreview');
 document.getElementById('imageBtn').addEventListener('click', () => fileInput.click());
 
-fileInput.addEventListener('change', function(e) {
+fileInput.addEventListener("change", async function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    const compressed = await compressImage(URL.createObjectURL(file));
+    selectedImage = compressed;
+    imagePreview.src = compressed;
+    imagePreview.style.display = "block";
+});
     const file = this.files[0];
     if (!file) return;
     const reader = new FileReader();
