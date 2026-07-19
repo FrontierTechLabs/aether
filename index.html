@@ -136,6 +136,8 @@ function getDID() {
     return did;
 }
 const did = getDID();
+
+// Display DID and username
 document.getElementById('didDisplay').textContent = '🆔 ' + did.substring(0, 10) + '…';
 document.getElementById('didDisplay').onclick = function() {
     alert('Your Decentralized ID (DID):\n\n' + did + '\n\nThis is your unique identity on the Sovereign AI Mesh.');
@@ -147,6 +149,27 @@ function showError(msg) {
     box.textContent = '⚠️ ' + msg;
     box.style.display = 'block';
     setTimeout(() => { box.style.display = 'none'; }, 8000);
+}
+
+// Image compression utility
+function compressImage(dataUrl, maxWidth = 800, quality = 0.7) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > maxWidth) {
+                h = (maxWidth / w) * h;
+                w = maxWidth;
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = dataUrl;
+    });
 }
 
 function renderFeed() {
@@ -191,26 +214,21 @@ async function fetchFeed() {
     }
 }
 
-// Image handling
+// Image handling with compression
 let selectedImage = null;
 const fileInput = document.getElementById('fileInput');
 const imagePreview = document.getElementById('imagePreview');
+
 document.getElementById('imageBtn').addEventListener('click', () => fileInput.click());
 
-fileInput.addEventListener("change", async function(e) {
-    const file = this.files[0];
-    if (!file) return;
-    const compressed = await compressImage(URL.createObjectURL(file));
-    selectedImage = compressed;
-    imagePreview.src = compressed;
-    imagePreview.style.display = "block";
-});
+fileInput.addEventListener('change', async function(e) {
     const file = this.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(ev) {
-        selectedImage = ev.target.result;
-        imagePreview.src = selectedImage;
+    reader.onload = async function(ev) {
+        const compressed = await compressImage(ev.target.result);
+        selectedImage = compressed;
+        imagePreview.src = compressed;
         imagePreview.style.display = 'block';
     };
     reader.readAsDataURL(file);
@@ -224,7 +242,7 @@ document.getElementById('postBtn').addEventListener('click', async () => {
         return;
     }
 
-    const image = selectedImage || null; // send base64 if present
+    const image = selectedImage || null;
 
     try {
         const res = await fetch('/api/posts', {
@@ -233,7 +251,6 @@ document.getElementById('postBtn').addEventListener('click', async () => {
             body: JSON.stringify({ did, text, location: 'New Delhi', image })
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
         input.value = '';
         selectedImage = null;
         imagePreview.style.display = 'none';
