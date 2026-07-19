@@ -123,7 +123,6 @@
         </div>
     </div>
 </div>
-
 <script>
 const BASE_URL = '';
 let feed = [];
@@ -192,7 +191,7 @@ async function fetchFeed() {
     }
 }
 
-// Image upload
+// Image handling
 let selectedImage = null;
 const fileInput = document.getElementById('fileInput');
 const imagePreview = document.getElementById('imagePreview');
@@ -218,30 +217,7 @@ document.getElementById('postBtn').addEventListener('click', async () => {
         return;
     }
 
-    let image = null;
-    if (selectedImage) {
-        // In a real implementation, we would upload to Supabase and get a URL.
-        // For now, we'll embed the base64 image (small images only).
-        // We'll use a tiny API to upload via the proxy.
-        try {
-            const uploadRes = await fetch('/api/upload', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: selectedImage, did })
-            });
-            if (uploadRes.ok) {
-                const uploadData = await uploadRes.json();
-                image = uploadData.url;
-            } else {
-                showError('Image upload failed. Posting without image.');
-            }
-        } catch (e) {
-            showError('Image upload error. Posting without image.');
-        }
-        selectedImage = null;
-        imagePreview.style.display = 'none';
-        fileInput.value = '';
-    }
+    const image = selectedImage || null; // send base64 if present
 
     try {
         const res = await fetch('/api/posts', {
@@ -250,7 +226,11 @@ document.getElementById('postBtn').addEventListener('click', async () => {
             body: JSON.stringify({ did, text, location: 'New Delhi', image })
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
         input.value = '';
+        selectedImage = null;
+        imagePreview.style.display = 'none';
+        fileInput.value = '';
         await fetchFeed();
     } catch (err) {
         showError('Failed to post: ' + err.message);
