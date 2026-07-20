@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aether - Sovereign Mesh</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #060A14; color: #E8F0FE; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 16px; }
+    #app { max-width: 480px; width: 100%; background: #0F172A; border-radius: 24px; padding: 20px; border: 1px solid rgba(229,57,53,0.08); }
+    h1 { color: #E53935; font-size: 28px; font-weight: 900; text-align: center; }
+    .sub { text-align: center; color: #8A9BB5; font-size: 14px; margin-bottom: 20px; }
+    input, textarea { width: 100%; padding: 12px 16px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); background: #1A2440; color: #F0F4FF; font-size: 14px; outline: none; margin-bottom: 10px; }
+    button { width: 100%; padding: 14px; border-radius: 60px; border: none; background: #E53935; color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; }
+    .post-card { background: #162035; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.04); }
+    .post-card img, .post-card video { width: 100%; border-radius: 12px; max-height: 400px; object-fit: contain; background: #0A0F1A; }
+    .username { color: #E53935; font-weight: 700; }
+    .timestamp { font-size: 11px; color: #8A9BB5; }
+    .actions { display: flex; gap: 16px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.03); }
+    .actions button { background: none; border: none; color: #F0F4FF; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 4px; width: auto; padding: 4px 8px; }
+    .comment-box { display: flex; gap: 8px; margin-top: 8px; }
+    .comment-box input { flex: 1; margin: 0; }
+    .comment-box button { width: auto; padding: 8px 16px; }
+    .hidden { display: none; }
+    .watermark-hint { font-size: 11px; color: #F5B041; text-align: center; margin: 8px 0; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="login-view">
+    <h1>Aether</h1>
+    <p class="sub">P2P Citizen Journalism · Permanent Mesh</p>
+    <input type="text" id="username-input" placeholder="Enter your username or email...">
+    <button id="login-btn">Join the Mesh</button>
+    <p style="text-align:center;font-size:10px;color:#4A5B7A;margin-top:12px;">🔒 Your DID is your identity · No phone number</p>
+  </div>
+
+  <div id="main-view" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04);padding-bottom:8px;margin-bottom:12px;">
+      <span style="font-size:24px;font-weight:900;color:#E53935;">Aether</span>
+      <span id="did-display" style="font-size:12px;color:#E53935;font-family:monospace;"></span>
+      <button id="logout-btn" style="width:auto;padding:4px 12px;font-size:12px;background:transparent;color:#4A5B7A;border:none;">Logout</button>
+    </div>
+
+    <!-- Upload area -->
+    <div style="background:#162035;border-radius:16px;padding:12px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.04);">
+      <input type="file" id="image-input" accept="image/*" style="display:none;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="upload-btn" style="flex:1;background:#E53935;">📤 Upload Image</button>
+      </div>
+      <textarea id="caption-input" rows="2" placeholder="What's happening? (optional)"></textarea>
+      <input type="text" id="location-input" placeholder="Location (e.g., City)…">
+      <button id="publish-btn" style="margin-top:6px;">🚀 Publish</button>
+      <div class="watermark-hint">🔖 Your DID and upload date will be embedded in every image.</div>
+    </div>
+
+    <!-- Feed -->
+    <div id="feed"></div>
+    <div style="margin-top:20px;text-align:center;font-size:10px;color:#4A5B7A;border-top:1px solid rgba(255,255,255,0.03);padding-top:12px;">
+      <span style="color:#E53935;font-weight:700;">⚡ Powered by Sovereign AI Mesh</span><br>
+      A Product of <span style="color:#E53935;">Frontier Tech Labs</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== GLOBAL STATE ==========
+let did = null;
+let username = null;
+let currentFile = null;
+let currentFileDataURL = null;
+
+// ========== WATERMARK FUNCTION ==========
+function addWatermarkToImage(imageDataUrl, did, username) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const now = new Date().toLocaleString();
+      const text = `${username} | ${did.substring(0, 12)}... | ${now}`;
+      const fontSize = Math.max(14, Math.floor(img.width / 40));
+      ctx.font = `${fontSize}px Inter, sans-serif`;
+      const metrics = ctx.measureText(text);
+      const padding = 16;
+      const x = img.width - metrics.width - padding * 2;
+      const y = img.height - fontSize - padding * 2;
+
+      // Background box
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      const r = 8;
+      const w = metrics.width + padding * 2;
+      const h = fontSize + padding * 2;
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `${fontSize}px Inter, sans-serif`;
+      ctx.fillText(text, x, y + fontSize);
+      resolve(canvas.toDataURL('image/jpeg', 0.9));
+    };
+    img.src = imageDataUrl;
+  });
+}
+
+// ========== API HELPERS ==========
+async function apiCall(endpoint, method = 'GET', body = null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`/api${endpoint}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'API error');
+  return data;
+}
+
+// ========== LOGIN ==========
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const input = document.getElementById('username-input');
+  const name = input.value.trim();
+  if (!name) return;
+  try {
+    let user = await apiCall(`/user/${encodeURIComponent(name)}`);
+    did = user.did;
+    username = user.username;
+    enterApp();
+  } catch (e) {
+    if (e.message.includes('404')) {
+      // Register new user
+      const newDid = 'did:mesh:' + Math.random().toString(36).substring(2, 10);
+      await apiCall('/set-username', 'POST', { did: newDid, username: name });
+      did = newDid;
+      username = name;
+      enterApp();
+    } else {
+      alert('Login error: ' + e.message);
+    }
+  }
+});
+
+document.getElementById('username-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+function enterApp() {
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('main-view').classList.remove('hidden');
+  document.getElementById('did-display').textContent = did.substring(0, 12);
+  loadFeed();
+}
+
+// ========== LOGOUT ==========
+document.getElementById('logout-btn').addEventListener('click', () => {
+  did = null;
+  username = null;
+  document.getElementById('login-view').classList.remove('hidden');
+  document.getElementById('main-view').classList.add('hidden');
+});
+
+// ========== UPLOAD FLOW ==========
+document.getElementById('upload-btn').addEventListener('click', () => {
+  document.getElementById('image-input').click();
+});
+
+document.getElementById('image-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentFile = file;
+  alert('Image selected. Add a caption and location, then click Publish.');
+});
+
+document.getElementById('publish-btn').addEventListener('click', async () => {
+  const file = currentFile;
+  if (!file) { alert('Please select an image first.'); return; }
+  const caption = document.getElementById('caption-input').value.trim() || 'Untitled';
+  const location = document.getElementById('location-input').value.trim() || 'Earth';
+  if (!did) { alert('Not logged in'); return; }
+
+  try {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const rawDataUrl = e.target.result;
+      const watermarkedDataUrl = await addWatermarkToImage(rawDataUrl, did, username);
+      const post = await apiCall('/posts', 'POST', {
+        did,
+        text: caption,
+        location,
+        image: watermarkedDataUrl,
+        type: 'post'
+      });
+      document.getElementById('caption-input').value = '';
+      document.getElementById('location-input').value = '';
+      currentFile = null;
+      document.getElementById('image-input').value = '';
+      loadFeed();
+    };
+    reader.readAsDataURL(file);
+  } catch (err) {
+    alert('Publish failed: ' + err.message);
+  }
+});
+
+// ========== FEED ==========
+async function loadFeed() {
+  try {
+    const posts = await apiCall('/feed');
+    const feedDiv = document.getElementById('feed');
+    feedDiv.innerHTML = '';
+    if (posts.length === 0) {
+      feedDiv.innerHTML = '<p style="text-align:center;color:#4A5B7A;font-size:14px;">No posts yet. Be the first!</p>';
+      return;
+    }
+    for (const post of posts) {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      let imageHtml = '';
+      if (post.image_url) {
+        imageHtml = `<img src="${post.image_url}" alt="post" loading="lazy">`;
+      }
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="username">${post.username}</span>
+          <span class="timestamp">${new Date(post.timestamp).toLocaleString()}</span>
+        </div>
+        <div style="margin:6px 0;">${imageHtml}</div>
+        <div style="font-size:14px;">${post.text}</div>
+        <div style="font-size:12px;color:#8A9BB5;">📍 ${post.location}</div>
+        <div class="actions">
+          <button onclick="toggleLike('${post.id}')">❤️ <span id="like-count-${post.id}">${post.likes || 0}</span></button>
+          <button onclick="toggleComment('${post.id}')">💬 <span id="comment-count-${post.id}">${post.comments || 0}</span></button>
+          <button onclick="sharePost('${post.id}')">🔄 Forward</button>
+        </div>
+        <div id="comment-area-${post.id}" class="hidden" style="margin-top:6px;">
+          <div class="comment-box">
+            <input type="text" id="comment-input-${post.id}" placeholder="Write a comment...">
+            <button onclick="submitComment('${post.id}')">Post</button>
+          </div>
+        </div>
+      `;
+      feedDiv.appendChild(card);
+    }
+  } catch (err) {
+    console.error('Feed error:', err);
+  }
+}
+
+// ========== LIKE ==========
+async function toggleLike(postId) {
+  if (!did) return;
+  try {
+    const result = await apiCall('/like', 'POST', { postId, did });
+    const likeSpan = document.getElementById(`like-count-${postId}`);
+    if (likeSpan) likeSpan.textContent = result.likes;
+  } catch (err) { alert('Like failed'); }
+}
+
+// ========== COMMENT ==========
+function toggleComment(postId) {
+  const area = document.getElementById(`comment-area-${postId}`);
+  if (area) area.classList.toggle('hidden');
+}
+
+async function submitComment(postId) {
+  const input = document.getElementById(`comment-input-${postId}`);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  try {
+    const result = await apiCall('/comment', 'POST', { postId, did, text });
+    input.value = '';
+    const countSpan = document.getElementById(`comment-count-${postId}`);
+    if (countSpan) countSpan.textContent = result.comments;
+  } catch (err) { alert('Comment failed'); }
+}
+
+// ========== SHARE ==========
+function sharePost(postId) {
+  const url = window.location.href + '?post=' + postId;
+  if (navigator.share) {
+    navigator.share({ title: 'Aether Post', url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+  }
+}
+</script>
+</body>
+</html>
