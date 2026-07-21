@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Aether - Sovereign Mesh</title>
+  <title>Satyam - Sovereign Mesh</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', -apple-system, sans-serif; background: #060A14; color: #E8F0FE; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 16px; }
@@ -28,7 +28,7 @@
 <body>
 <div id="app">
   <div id="login-view">
-    <h1>Aether</h1>
+    <h1>Satyam</h1>
     <p class="sub">P2P Citizen Journalism · Permanent Mesh</p>
     <input type="text" id="username-input" placeholder="Enter your username or email...">
     <button id="login-btn">Join the Mesh</button>
@@ -37,7 +37,7 @@
 
   <div id="main-view" class="hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04);padding-bottom:8px;margin-bottom:12px;">
-      <span style="font-size:24px;font-weight:900;color:#E53935;">Aether</span>
+      <span style="font-size:24px;font-weight:900;color:#E53935;">Satyam</span>
       <span id="did-display" style="font-size:12px;color:#E53935;font-family:monospace;"></span>
       <button id="logout-btn" style="width:auto;padding:4px 12px;font-size:12px;background:transparent;color:#4A5B7A;border:none;">Logout</button>
     </div>
@@ -292,7 +292,7 @@ async function submitComment(postId) {
 function sharePost(postId) {
   const url = window.location.href + '?post=' + postId;
   if (navigator.share) {
-    navigator.share({ title: 'Aether Post', url });
+    navigator.share({ title: 'Satyam Post', url });
   } else {
     navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
   }

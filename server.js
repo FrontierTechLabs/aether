@@ -216,5 +216,5 @@ app.get('/api/comments/:postId', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Aether backend on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Satyam backend on port ${PORT}`));
 // Force rebuild
