@@ -1,7 +1,13 @@
 {
+  "name": "aether",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "@supabase/supabase-js": "^2.110.7",
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "@supabase/supabase-js": "^2.39.7",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
   }
 }
