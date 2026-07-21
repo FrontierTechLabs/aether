@@ -6,12 +6,12 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 
-// ----- FALLBACK: use hardcoded values if env vars are missing (temporary) -----
+// ----- Use Service Role Key if available (bypasses RLS) -----
 const supabaseUrl = process.env.SUPABASE_URL || 'https://qedktepkjztappjgllpa.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'sb_publishable_qoQ6Ir0SUu0HlLbmIxdu6w_dc0S1tOn';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
 console.log('🔍 SUPABASE_URL:', supabaseUrl ? 'Set' : 'MISSING');
-console.log('🔍 SUPABASE_ANON_KEY:', supabaseKey ? 'Set' : 'MISSING');
+console.log('🔍 Using key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Service Role Key ✅' : 'Anon Key (may be blocked by RLS)');
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Missing credentials');
@@ -64,6 +64,7 @@ app.post('/api/set-username', async (req, res) => {
       .single();
     if (error) {
       if (error.code === '23505') return res.status(409).json({ error: 'Username taken' });
+      console.error('Insert error:', error);
       throw error;
     }
     res.json({ success: true });
