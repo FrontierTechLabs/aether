@@ -5,6 +5,6 @@
   },
   "deploy": {
     "startCommand": "node server.js",
-    "healthcheckPath": "/api/feed"
+    "healthcheckPath": "/"
   }
 }
