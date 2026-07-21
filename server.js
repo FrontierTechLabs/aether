@@ -6,8 +6,18 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// ----- FALLBACK: use hardcoded values if env vars are missing (temporary) -----
+const supabaseUrl = process.env.SUPABASE_URL || 'https://qedktepkjztappjgllpa.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'sb_publishable_qoQ6Ir0SUu0HlLbmIxdu6w_dc0S1tOn';
+
+console.log('🔍 SUPABASE_URL:', supabaseUrl ? 'Set' : 'MISSING');
+console.log('🔍 SUPABASE_ANON_KEY:', supabaseKey ? 'Set' : 'MISSING');
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing credentials');
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // ---------- Upload image to Supabase Storage ----------
@@ -83,7 +93,7 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// ---------- Feed (all posts) ----------
+// ---------- Feed ----------
 app.get('/api/feed', async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -98,7 +108,7 @@ app.get('/api/feed', async (req, res) => {
   }
 });
 
-// ---------- Create post with image (already watermarked) ----------
+// ---------- Create post ----------
 app.post('/api/posts', async (req, res) => {
   const { did, text, location, image, type } = req.body;
   if (!did) return res.status(401).json({ error: 'Missing did' });
@@ -215,6 +225,8 @@ app.get('/api/comments/:postId', async (req, res) => {
   }
 });
 
+// ---------- Serve static frontend ----------
+app.use(express.static('public'));
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Satyam backend on port ${PORT}`));
-// Force rebuild
+app.listen(PORT, () => console.log(`✅ Satyam running on port ${PORT}`));
