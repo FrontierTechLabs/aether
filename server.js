@@ -8,7 +8,7 @@ app.use(express.static('public'));
 
 // ----- Use Service Role Key if available (bypasses RLS) -----
 const supabaseUrl = process.env.SUPABASE_URL || 'https://qedktepkjztappjgllpa.supabase.co';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZGt0ZXBranp0YXBwamdsbHBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTc4OTY1OSwiZXhwIjoyMDk3MzY1NjU5fQ.PAZr4gelAcS5PJ8wy4QE9bFn6S9XwyW-hE3Pr1EsaTE';
 
 console.log('🔍 SUPABASE_URL:', supabaseUrl ? 'Set' : 'MISSING');
 console.log('🔍 Using key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Service Role Key ✅' : 'Anon Key (may be blocked by RLS)');
